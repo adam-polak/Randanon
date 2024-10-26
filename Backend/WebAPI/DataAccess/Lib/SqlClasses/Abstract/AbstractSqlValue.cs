@@ -9,7 +9,7 @@ public abstract class AbstractSqlValue : ISqlValue
         _name = name;
     }
 
-    public string GetLabel()
+    public string GetLabelString()
     {
         return _name;
     }

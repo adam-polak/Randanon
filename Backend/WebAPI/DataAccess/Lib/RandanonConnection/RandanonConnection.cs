@@ -1,7 +1,6 @@
 
 using System.Data.Common;
 using Dapper;
-using Microsoft.IdentityModel.Protocols.Configuration;
 
 namespace WebAPI.DataAccess.Lib;
 
