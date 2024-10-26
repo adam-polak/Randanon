@@ -2,14 +2,14 @@ namespace WebAPI.DataAccess.Lib;
 
 public abstract class AbstractSqlValue : ISqlValue
 {
-    public string _name;
+    private string _name;
 
     public AbstractSqlValue(string name)
     {
         _name = name;
     }
 
-    public string GetLabelString()
+    public string GetLabel()
     {
         return _name;
     }
