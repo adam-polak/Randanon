@@ -11,7 +11,7 @@ public static class DbConnectionFactory
         string connectionString;
         if(Environment.GetEnvironmentVariable("ConnectionString") == null)
         {
-            connectionString = JsonReader.GetValue("ConnectionString");
+            connectionString = JsonInfoRetriever.GetValue("hide.json", "ConnectionString");
             return new NpgsqlConnection(connectionString);
         } else {
             connectionString = Environment.GetEnvironmentVariable("ConnectionString") ?? "";

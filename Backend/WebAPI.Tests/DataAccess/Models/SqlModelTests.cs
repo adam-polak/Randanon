@@ -18,3 +18,22 @@ public class UserModel_GetSqlValues
         Assert.Equal($"{m.Key}", v.GetValueSqlString());
     }
 }
+
+public class ChatModel_GetSqlValues
+{
+    [Fact]
+    public void GetSqlValues_ChatModel()
+    {
+        ChatModel m = new ChatModel() { UserID = 123, ChatNumber = 456, Message = "laalala" };
+        List<ISqlValue> values = m.GetSqlValues();
+        ISqlValue v = values.ElementAt(0);
+        Assert.Equal("UserID", v.GetLabelString());
+        Assert.Equal($"{m.UserID}", v.GetValueSqlString());
+        v = values.ElementAt(1);
+        Assert.Equal("ChatNumber", v.GetLabelString());
+        Assert.Equal($"{m.ChatNumber}", v.GetValueSqlString());
+        v = values.ElementAt(2);
+        Assert.Equal("Message", v.GetLabelString());
+        Assert.Equal($"'{m.Message}'", v.GetValueSqlString());
+    }
+}

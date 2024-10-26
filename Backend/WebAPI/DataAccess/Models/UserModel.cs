@@ -9,6 +9,11 @@ public class UserModel : ISqlModel
 
     public List<ISqlValue> GetSqlValues()
     {
-        throw new NotImplementedException();
+        List<ISqlValue> values = [
+            SqlValueFactory.CreateSqlValue(nameof(ID), ID),
+            SqlValueFactory.CreateSqlValue(nameof(Key), Key)
+        ];
+        
+        return values;
     }
 }
