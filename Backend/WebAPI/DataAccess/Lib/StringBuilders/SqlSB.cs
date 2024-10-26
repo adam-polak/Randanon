@@ -26,10 +26,9 @@ public class SqlSB : ISqlStringBuilder
         return sqlStr;
     }
 
-    public string InsertString(string table, ISqlModel model)
+    public string InsertString(string table, List<ISqlValue> values)
     {
         string sqlStr = $"INSERT INTO {table} (";
-        List<ISqlValue> values = model.GetSqlValues();
 
         for(int i = 0; i < values.Count; i++)
         {

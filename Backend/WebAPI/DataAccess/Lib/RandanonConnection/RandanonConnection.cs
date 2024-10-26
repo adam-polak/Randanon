@@ -37,7 +37,7 @@ public class RandanonConnection : IDbConnection
     public async void InsertAsync(string table, ISqlModel model)
     {
         await _dbConnection.OpenAsync();
-        string query = _sqlSB.InsertString(table, model);
+        string query = _sqlSB.InsertString(table, model.GetSqlValues());
 
         using(DbCommand command = DbCommandFactory.CreateDbCommand(query, _dbConnection))
         {
@@ -53,7 +53,7 @@ public class RandanonConnection : IDbConnection
 
         foreach(ISqlModel model in models)
         {
-            string query = _sqlSB.InsertString(table, model);
+            string query = _sqlSB.InsertString(table, model.GetSqlValues());
             using(DbCommand command = DbCommandFactory.CreateDbCommand(query, _dbConnection))
             {
                 await command.ExecuteNonQueryAsync();
