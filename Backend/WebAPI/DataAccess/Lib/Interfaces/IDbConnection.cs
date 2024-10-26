@@ -2,12 +2,13 @@ namespace WebAPI.DataAccess.Lib;
 
 public interface IDbConnection
 {
-    private string _database;
-    private string _connectionString;
+    public Task<List<ISqlModel>> SelectAllAsync<T>(string table);
 
-    public List<ISqlModel> SelectAll(string table);
-    public List<ISqlModel> Select(string table, string query);
-    public bool Contains(string table, string query);
-    public void Insert(string table, ISqlModel model);
-    public void InsertAll(string table, List<ISqlModel> models);
+    public Task<List<ISqlModel>> SelectAsync<T>(string table, ISqlValue value);
+    public Task<List<ISqlModel>> SelectAsync<T>(string table, List<ISqlValue> values);
+
+    public Task<bool> ContainsAsync<T>(string table, ISqlValue value);
+
+    public void InsertAsync(string table, ISqlModel model);
+    public void InsertAllAsync(string table, List<ISqlModel> models);
 }
