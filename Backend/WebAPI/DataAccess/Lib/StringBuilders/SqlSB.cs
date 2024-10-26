@@ -27,4 +27,9 @@ public class SqlSB : ISqlStringBuilder
     {
         throw new NotImplementedException();
     }
+
+    public string SelectAllString(string table)
+    {
+        throw new NotImplementedException();
+    }
 }
