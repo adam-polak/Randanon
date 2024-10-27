@@ -41,6 +41,6 @@ public class UserTableAccess
 
     public async Task<bool> ValidUserAsync(UserModel user)
     {
-        return await _connection.ContainsAsync<UserModel>(_table, user);
+        return await _connection.ContainsAsync<UserModel>(_table, user.GetSqlValues());
     }
 }

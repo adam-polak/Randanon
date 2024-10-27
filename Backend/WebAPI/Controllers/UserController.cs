@@ -41,7 +41,7 @@ public class UserController : ControllerBase
         } catch(Exception e) {
             Console.WriteLine("Failed to validate user...");
             Console.WriteLine(e.Message);
-            return BadRequest("Failed to validate user");
+            return BadRequest("Failed");
         }
     }
 

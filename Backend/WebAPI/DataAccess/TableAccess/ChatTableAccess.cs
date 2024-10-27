@@ -1,6 +1,5 @@
 using WebAPI.DataAccess.Lib;
 using WebAPI.DataAccess.Models;
-using WebAPI.Controllers.Models;
 using System.Data.Common;
 using Dapper;
 
@@ -36,5 +35,17 @@ public class ChatTableAccess
         message = StringSqlValue.ValidateString(message);
         ChatModel m = new ChatModel() { UserID = user.ID, ChatNumber = (await GetLargestPKey()) + 1, Message = message };
         _randConnection.InsertAsync(_table, m);
+    }
+
+    public async Task<bool> DeleteChat(UserModel user, long chatNumber)
+    {
+        ChatModel m = new ChatModel() { UserID = user.ID, ChatNumber = chatNumber, Message = "" };
+        List<ISqlValue> values = m.GetSqlValues()
+                                    .Where(
+                                        (x) => 
+                                            x.GetValueSqlString().Equals($"{user.ID}") 
+                                            || x.GetValueSqlString().Equals($"{chatNumber}")
+                                        ).ToList();
+        return await _randConnection.DeleteAsync<ChatModel>(_table, values);
     }
 }
