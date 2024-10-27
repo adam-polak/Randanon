@@ -18,13 +18,21 @@ public class StringSqlValue : AbstractSqlValue
 
     public StringSqlValue(string name, string value) : base(name)
     {
-        _value = value;
-        //todo: verify string is legal input
+        _value = ValidateString(value);
     }
 
-    public static bool VerifyValueString(string str)
+    public static string ValidateString(string str)
     {
-        return false;
+        char[] arr = str.ToCharArray();
+        string validString = "";
+        for(int i = 0; i < arr.Count(); i++)
+        {
+            if(IllegalValues.Contains($"{arr[i]}")) continue;
+            else if(i < arr.Count() - 1 && IllegalValues.Contains($"{arr[i]}" + arr[i + 1])) continue;
+            validString += arr[i];
+        }
+
+        return validString;
     }
 
     public override string GetValueSqlString()

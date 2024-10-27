@@ -2,10 +2,10 @@ namespace WebAPI.DataAccess.Lib;
 
 public interface IDbConnection
 {
-    public Task<List<ISqlModel>> SelectAllAsync<T>(string table);
+    public Task<List<T>> SelectAllAsync<T>(string table);
 
-    public Task<List<ISqlModel>> SelectAsync<T>(string table, ISqlValue value);
-    public Task<List<ISqlModel>> SelectAsync<T>(string table, List<ISqlValue> values);
+    public Task<List<T>> SelectAsync<T>(string table, ISqlValue value);
+    public Task<List<T>> SelectAsync<T>(string table, List<ISqlValue> values);
 
     public Task<bool> ContainsAsync<T>(string table, ISqlValue value);
 

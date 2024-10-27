@@ -3,6 +3,12 @@ using Dapper;
 
 namespace WebAPI.DataAccess.Lib;
 
+public static class RandanonQueryCache
+{
+    //implement dictionary that contains cache for queries, so that connection only needs to
+    //query above the highest id
+}
+
 public class RandanonConnection : IDbConnection
 {
 
@@ -29,7 +35,14 @@ public class RandanonConnection : IDbConnection
     {
         ValidateType(typeof(T));
 
-        List<ISqlModel> list = await SelectAsync<T>(table, value);
+        List<T> list = await SelectAsync<T>(table, value);
+        return list.Count != 0;
+    }
+
+    public async Task<bool> ContainsAsync<T>(string table, ISqlModel model)
+    {
+        ValidateType(typeof(T));
+        List<T> list = await SelectAsync<T>(table, model.GetSqlValues());
         return list.Count != 0;
     }
 
@@ -62,42 +75,41 @@ public class RandanonConnection : IDbConnection
         await _dbConnection.CloseAsync();
     }
 
-    public async Task<List<ISqlModel>> SelectAsync<T>(string table, ISqlValue value)
+    public async Task<List<T>> SelectAsync<T>(string table, ISqlValue value)
     {
         ValidateType(typeof(T));
 
         await _dbConnection.OpenAsync();
-
         string query = _sqlSB.SelectString(table, value);
-        List<ISqlModel> list = (List<ISqlModel>)await _dbConnection.QueryAsync<T>(query);
+        List<T> list = (List<T>)await _dbConnection.QueryAsync<T>(query);
 
         await _dbConnection.CloseAsync();
 
         return list;
     }
 
-    public async Task<List<ISqlModel>> SelectAsync<T>(string table, List<ISqlValue> values)
+    public async Task<List<T>> SelectAsync<T>(string table, List<ISqlValue> values)
     {
         ValidateType(typeof(T));
 
         await _dbConnection.OpenAsync();
 
         string query = _sqlSB.SelectString(table, values);
-        List<ISqlModel> list = (List<ISqlModel>)await _dbConnection.QueryAsync<T>(query);
+        List<T> list = (List<T>)await _dbConnection.QueryAsync<T>(query);
 
         await _dbConnection.CloseAsync();
         
         return list;
     }
 
-    public async Task<List<ISqlModel>> SelectAllAsync<T>(string table)
+    public async Task<List<T>> SelectAllAsync<T>(string table)
     {
         ValidateType(typeof(T));
 
         await _dbConnection.OpenAsync();
 
         string query = _sqlSB.SelectAllString(table);
-        List<ISqlModel> list = (List<ISqlModel>)await _dbConnection.QueryAsync<T>(query);
+        List<T> list = (List<T>)await _dbConnection.QueryAsync<T>(query);
 
         await _dbConnection.CloseAsync();
         

@@ -10,12 +10,13 @@ public class ChatModel : ISqlModel
 
     public List<ISqlValue> GetSqlValues()
     {
+        
         List<ISqlValue> values = [
             SqlValueFactory.CreateSqlValue(nameof(UserID), UserID),
             SqlValueFactory.CreateSqlValue(nameof(ChatNumber), ChatNumber),
             SqlValueFactory.CreateSqlValue(nameof(Message), Message)
         ];
-        
+
         return values;
     }
 }
