@@ -1,4 +1,3 @@
-using System.Text.Json;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -72,7 +71,7 @@ public class ChatController : ControllerBase
 
             string message = GetMessageFromJson(json);
             _chatTable.SendChatAsync(user, message);
-            return Ok("Message sent");
+            return Ok();
         } catch(Exception e) {
             Console.WriteLine("Failed to send chat...");
             Console.WriteLine(e.Message);
@@ -91,9 +90,9 @@ public class ChatController : ControllerBase
             long chatNumber = GetChatNumberFromJson(json);
 
             bool deleted = await _chatTable.DeleteChat(user, chatNumber);
-            
+
             if(deleted) return Ok();
-            else return Ok(ErrorMessages.INVALID_USER);
+            else return Ok(ErrorMessages.NONE_TO_DELETE);
 
         } catch(Exception e) {
             Console.WriteLine("Failed to delete chat...");

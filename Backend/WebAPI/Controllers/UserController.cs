@@ -36,7 +36,7 @@ public class UserController : ControllerBase
     public async Task<IActionResult> ValidUser([FromBody] UserModel user)
     {
         try {
-            if(await _userTable.ValidUserAsync(user)) return Ok("true");
+            if(await _userTable.ValidUserAsync(user)) return Ok();
             else return Ok("false");
         } catch(Exception e) {
             Console.WriteLine("Failed to validate user...");
