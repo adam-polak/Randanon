@@ -14,4 +14,7 @@ export default function Home() {
       b. validate user found in cookies
         if incorrect info delete from cookies and step 2
   2. Create user and store in cookies if one does not exist
+
+
+  using react-cookie
   */}
