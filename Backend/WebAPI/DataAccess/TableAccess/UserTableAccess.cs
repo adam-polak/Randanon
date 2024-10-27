@@ -22,7 +22,7 @@ public class UserTableAccess
         return _rnd.NextInt64(1928, 9999999);
     }
 
-    public async Task<UserModel> CreateUser()
+    public async Task<UserModel> CreateUserAsync()
     {
         long id = GetRandomLong();
         List<UserModel> users = await _connection.SelectAllAsync<UserModel>(_table);
@@ -39,7 +39,7 @@ public class UserTableAccess
         return user;
     }
 
-    public async Task<bool> ValidUser(UserModel user)
+    public async Task<bool> ValidUserAsync(UserModel user)
     {
         return await _connection.ContainsAsync<UserModel>(_table, user);
     }

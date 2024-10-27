@@ -41,15 +41,15 @@ public class StringSqlValue_GetValueSqlString
     }
 }
 
-public class StringSqlValue_VerifyValueString
+public class StringSqlValue_ValidateString
 {
     [Fact]
     public void VerifyValueString_InputIllegal_ReturnFalse()
     {
         foreach(string x in StringSqlValue.IllegalValues)
         {
-            bool result = StringSqlValue.VerifyValueString(x);
-            Assert.False(result, $"Illegal input string: {x} should not verify as true");
+            string result = StringSqlValue.ValidateString(x);
+            Assert.True(!result.Contains(x), $"Result: {result} should not contain Illegal Value: {x}");
         }
     }
 
@@ -60,8 +60,8 @@ public class StringSqlValue_VerifyValueString
         foreach(string x in StringSqlValue.IllegalValues)
         {
             string input = value + x;
-            bool result = StringSqlValue.VerifyValueString(input);
-            Assert.False(result, $"Illegal input string: {input} should not verify as true");
+            string result = StringSqlValue.ValidateString(input);
+            Assert.True(!result.Contains(x), $"Result: {result} should not contain Illegal Value: {x}");
         }
     }
 
@@ -73,8 +73,8 @@ public class StringSqlValue_VerifyValueString
         foreach(string x in StringSqlValue.IllegalValues)
         {
             string input = val1 + x + val2;
-            bool result = StringSqlValue.VerifyValueString(input);
-            Assert.False(result, $"Illegal input string: {input} should not verify as true");
+            string result = StringSqlValue.ValidateString(input);
+            Assert.True(!result.Contains(x), $"Result: {result} should not contain Illegal Value: {x}");
         }
     }
 
