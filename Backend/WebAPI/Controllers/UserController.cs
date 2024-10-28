@@ -1,5 +1,3 @@
-using System.Net.Http.Headers;
-using Azure.Core;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;

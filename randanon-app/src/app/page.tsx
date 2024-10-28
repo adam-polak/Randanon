@@ -3,10 +3,12 @@
 import { useEffect, useState } from "react";
 import { validationScript } from "./lib/util/scripts";
 import getUserFromCookies from "./lib/cookies";
+import ChatBox from "./lib/ui/chat";
+import { User } from "./lib/util/definitions";
 
 export default function Home() {
 
-  let [user, setUser] = useState(
+  let [user, setUser] = useState<User>(
     {
       ID: 0,
       UserKey: 0
@@ -38,7 +40,9 @@ export default function Home() {
   return (
     <main>
       <h1>Hello world!</h1>
-      <h1>User: {user.ID} {user.UserKey}</h1>
+      <div className="flex">
+        <ChatBox user={user} />
+      </div>
     </main>
   );
 }

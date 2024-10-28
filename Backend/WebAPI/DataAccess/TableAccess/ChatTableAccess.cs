@@ -30,6 +30,21 @@ public class ChatTableAccess
         return largest;
     }
 
+    public async Task<int> GetChatCount()
+    {
+        await _conneciton.OpenAsync();
+        List<int> response = (List<int>)await _conneciton.QueryAsync<int>($"SELECT COUNT(*) FROM {_table};");
+        await _conneciton.CloseAsync();
+        
+        return response.FirstOrDefault();
+    }
+
+    public async Task<List<ChatModel>> GetAllChats()
+    {
+        List<ChatModel> chats = await _randConnection.SelectAllAsync<ChatModel>(_table);
+        return chats;
+    }
+
     public async void SendChatAsync(UserModel user, string message)
     {
         message = StringSqlValue.ValidateString(message);

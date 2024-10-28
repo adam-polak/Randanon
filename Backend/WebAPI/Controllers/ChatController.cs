@@ -7,6 +7,8 @@ using WebAPI.DataAccess.TableAccess;
 using System.Text.Json.Nodes;
 using Newtonsoft.Json.Linq;
 using WebAPI.Controllers.Lib;
+using System.Runtime.CompilerServices;
+using WebAPI.Controllers.Models;
 
 namespace WebAPI.Controllers;
 
@@ -59,6 +61,52 @@ public class ChatController : ControllerBase
     private JObject GetJObject(JsonObject json)
     {
         return JObject.Parse(json.ToString());
+    }
+
+    [HttpGet("all")]
+    public async Task<IActionResult> GetChats()
+    {
+        AddHeader.AddCors(this);
+        try {
+            List<ChatModel> chats = await _chatTable.GetAllChats();
+
+            // Sort chats
+            chats.Sort((x, y) => {
+                if(x.ChatNumber < y.ChatNumber) return -1;
+                else if(x.ChatNumber > y.ChatNumber) return 1;
+                else return 0;
+            });
+
+            List<WebChatModel> webChatModels = [];
+            foreach(ChatModel chat in chats)
+            {
+                webChatModels.Add(new WebChatModel() {
+                    ChatNumber = chat.ChatNumber,
+                    Message = chat.Message
+                });
+            }
+
+            string json = JsonConvert.SerializeObject(webChatModels);
+            return Ok(json);
+        } catch(Exception e) {
+            Console.WriteLine("Failed to get all chats...");
+            Console.WriteLine(e.Message);
+            return BadRequest("Failed");
+        }
+    }
+
+    [HttpGet("count")]
+    public async Task<IActionResult> GetChatCount()
+    {
+        AddHeader.AddCors(this);
+        try {
+            int count = await _chatTable.GetChatCount();
+            return Ok(count);
+        } catch(Exception e) {
+            Console.WriteLine("Failed to get chat count...");
+            Console.WriteLine(e.Message);
+            return BadRequest("Failed");
+        }
     }
 
     [HttpPost("send")]

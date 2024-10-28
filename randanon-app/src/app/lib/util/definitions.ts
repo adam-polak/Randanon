@@ -3,7 +3,7 @@ export type User = {
     UserKey: number;
 }
 
-export type Chat = {
+export type ChatModel = {
     ChatNumber: number;
     Message: string;
 }
