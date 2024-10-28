@@ -24,7 +24,6 @@ public static class JsonInfoRetriever
         FileWithKey fk = new FileWithKey() { FileName = fileName, Key = key };
         // Check cache for value
         if(Pairs.ContainsKey(fk)) return Pairs.GetValueOrDefault(fk) ?? "";
-
         string value = "";
         using(JsonTextReader reader = new JsonTextReader(new StreamReader(fileName)))
         {
@@ -33,7 +32,7 @@ public static class JsonInfoRetriever
                 if(reader.TokenType.ToString().Equals("PropertyName"))
                 {
                     string k = reader.Value != null ? reader.Value.ToString() ?? "" : "";
-                    if(!k.Equals(key)) break;
+                    if(!k.Equals(key)) continue;
                     reader.Read();
                     value = reader.Value != null ? reader.Value.ToString() ?? "" : "";
                     break;

@@ -1,3 +1,5 @@
+using WebAPI.DataAccess.Lib;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -7,7 +9,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddCors(p => p.AddPolicy("corspolicy", build =>
 {
-    build.WithOrigins(Environment.GetEnvironmentVariable("Domain") ?? "");
+    build.WithOrigins(Environment.GetEnvironmentVariable("AllowDomain") ?? JsonInfoRetriever.GetValue("hide.json", "AllowDomain"));
     build.AllowAnyMethod();
     build.AllowAnyHeader();
 }));

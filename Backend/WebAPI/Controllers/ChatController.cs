@@ -6,6 +6,7 @@ using WebAPI.DataAccess.Models;
 using WebAPI.DataAccess.TableAccess;
 using System.Text.Json.Nodes;
 using Newtonsoft.Json.Linq;
+using WebAPI.Controllers.Lib;
 
 namespace WebAPI.Controllers;
 
@@ -63,6 +64,7 @@ public class ChatController : ControllerBase
     [HttpPost("send")]
     public async Task<IActionResult> SendChat([FromBody] JsonObject j)
     {
+        AddHeader.AddCors(this);
         try {
             JObject json = GetJObject(j);
 
@@ -82,6 +84,7 @@ public class ChatController : ControllerBase
     [HttpDelete("delete")]
     public async Task<IActionResult> DeleteChat([FromBody] JsonObject j)
     {
+        AddHeader.AddCors(this);
         try {
             JObject json = GetJObject(j);
             UserModel user = GetUserFromJson(json);

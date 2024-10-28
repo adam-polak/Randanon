@@ -2,13 +2,16 @@ import { RandanonApi, User } from "./definitions";
 
 const apiUrl = `${RandanonApi}/user`;
 
-export async function ValidateUser(user: User) : Promise<boolean> {
+export async function validateUser(user: User) : Promise<boolean> {
     const json = JSON.stringify(user);
     const requestUrl = `${apiUrl}/validuser`;
 
     const response = await fetch(requestUrl, {
+        headers: {
+            "Content-Type": "application/json"
+        },
         method: "POST",
-        body: json
+        body: json,
     });
 
     const result = await response.text();
@@ -17,9 +20,11 @@ export async function ValidateUser(user: User) : Promise<boolean> {
     else return false;
 }
 
-export async function CreateUser() : Promise<User | null> {
+export async function createUser() : Promise<User | null> {
     const requestUrl = `${apiUrl}/createuser`;
-    const response = await fetch(requestUrl);
+    const response = await fetch(requestUrl, {
+        method: "POST"
+    });
 
     const result = await response.text();
 
