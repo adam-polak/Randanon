@@ -17,7 +17,6 @@ namespace WebAPI.Controllers;
 [Route("/chat")]
 public class ChatController : ControllerBase
 {
-
     UserTableAccess _userTable;
     ChatTableAccess _chatTable;
 
@@ -63,33 +62,52 @@ public class ChatController : ControllerBase
         return JObject.Parse(json.ToString());
     }
 
+    private string GetJsonForChatModelList(List<ChatModel> chats) 
+    {
+        // Sort chats
+        chats.Sort((x, y) => {
+            if(x.ChatNumber < y.ChatNumber) return -1;
+            else if(x.ChatNumber > y.ChatNumber) return 1;
+            else return 0;
+        });
+
+        List<WebChatModel> webChatModels = [];
+        foreach(ChatModel chat in chats)
+        {
+            webChatModels.Add(new WebChatModel() {
+                ChatNumber = chat.ChatNumber,
+                Message = chat.Message
+            });
+        }
+
+        return JsonConvert.SerializeObject(webChatModels);
+    }
+
     [HttpGet("all")]
     public async Task<IActionResult> GetChats()
     {
         AddHeader.AddCors(this);
         try {
             List<ChatModel> chats = await _chatTable.GetAllChats();
-
-            // Sort chats
-            chats.Sort((x, y) => {
-                if(x.ChatNumber < y.ChatNumber) return -1;
-                else if(x.ChatNumber > y.ChatNumber) return 1;
-                else return 0;
-            });
-
-            List<WebChatModel> webChatModels = [];
-            foreach(ChatModel chat in chats)
-            {
-                webChatModels.Add(new WebChatModel() {
-                    ChatNumber = chat.ChatNumber,
-                    Message = chat.Message
-                });
-            }
-
-            string json = JsonConvert.SerializeObject(webChatModels);
+            string json = GetJsonForChatModelList(chats);
             return Ok(json);
         } catch(Exception e) {
             Console.WriteLine("Failed to get all chats...");
+            Console.WriteLine(e.Message);
+            return BadRequest("Failed");
+        }
+    }
+
+    [HttpGet("/chats/{num}")]
+    public async Task<IActionResult> GetChatsAbove(int num)
+    {
+        AddHeader.AddCors(this);
+        try {
+            List<ChatModel> chats = await _chatTable.GetChatsAbove(num);
+            string json = GetJsonForChatModelList(chats);
+            return Ok(json);
+        } catch(Exception e) {
+            Console.WriteLine("Failed to get chats above num...");
             Console.WriteLine(e.Message);
             return BadRequest("Failed");
         }
@@ -115,7 +133,6 @@ public class ChatController : ControllerBase
         AddHeader.AddCors(this);
         try {
             JObject json = GetJObject(j);
-
             UserModel user = GetUserFromJson(json);
             if(!await _userTable.ValidUserAsync(user)) return Ok(ErrorMessages.INVALID_USER);
 

@@ -39,6 +39,14 @@ public class ChatTableAccess
         return response.FirstOrDefault();
     }
 
+    public async Task<List<ChatModel>> GetChatsAbove(int x)
+    {
+        await _conneciton.OpenAsync();
+        List<ChatModel> chats = (List<ChatModel>)await _conneciton.QueryAsync<ChatModel>($"SELECT * FROM {_table} WHERE ChatNumber > {x};");
+        await _conneciton.CloseAsync();
+        return chats;
+    }
+
     public async Task<List<ChatModel>> GetAllChats()
     {
         List<ChatModel> chats = await _randConnection.SelectAllAsync<ChatModel>(_table);

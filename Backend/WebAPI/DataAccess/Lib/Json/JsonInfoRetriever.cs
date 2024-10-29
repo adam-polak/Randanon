@@ -21,9 +21,9 @@ public static class JsonInfoRetriever
 
     public static string GetValue(string fileName, string key)
     {
-        FileWithKey fk = new FileWithKey() { FileName = fileName, Key = key };
-        // Check cache for value
-        if(Pairs.ContainsKey(fk)) return Pairs.GetValueOrDefault(fk) ?? "";
+        // FileWithKey fk = new FileWithKey() { FileName = fileName, Key = key };
+        // Check cache for value, dict gets corrupt with async calls
+        // if(Pairs.ContainsKey(fk)) return Pairs.GetValueOrDefault(fk) ?? "";
         string value = "";
         using(JsonTextReader reader = new JsonTextReader(new StreamReader(fileName)))
         {
@@ -41,7 +41,7 @@ public static class JsonInfoRetriever
         }
 
         // Add query to cache
-        Pairs.Add(fk, value);
+        // Pairs.Add(fk, value);
         return value;
     }
 }

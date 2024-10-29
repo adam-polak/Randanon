@@ -1,4 +1,3 @@
-import { json } from "stream/consumers";
 import { RandanonApi, ChatModel, User } from "./definitions";
 
 const apiUrl = `${RandanonApi}/chat`;
@@ -13,8 +12,19 @@ export async function getChatCount() : Promise<number> {
     return parseInt(result);
 }
 
-export async function getChats() : Promise<ChatModel[]> {
-    const requestUrl = `${apiUrl}/all`;
+export async function sendChatJson(json: string) {
+    const requestUrl = `${apiUrl}/send`;
+    await fetch(requestUrl, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: json
+    });
+}
+
+export async function getChatsAbove(x : number) : Promise<ChatModel[]> {
+    const requestUrl = `${RandanonApi}/chats/${x}`;
 
     const response = await fetch(requestUrl);
     const result = await response.text();
