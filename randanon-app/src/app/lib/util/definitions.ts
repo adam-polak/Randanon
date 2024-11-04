@@ -13,5 +13,5 @@ export class RandanonApResponses {
     public static INVALID_USER = "Invalid user";
 }
 
-export const RandanonApi : string = "http://localhost:5195"
-//export const RandanonApi : string = ""
+// export const RandanonApi : string = "http://localhost:5195";
+export const RandanonApi : string = "https://randanon.azurewebsites.net";
