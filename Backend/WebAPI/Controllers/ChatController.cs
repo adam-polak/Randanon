@@ -113,6 +113,21 @@ public class ChatController : ControllerBase
         }
     }
 
+    [HttpGet("chatnumbers")]
+    public IActionResult GetChatNumbers()
+    {
+        AddHeader.AddCors(this);
+        try {
+            List<int> chatNumbers = _chatTable.GetChatNumbers();
+            string json = JsonConvert.SerializeObject(chatNumbers);
+            return Ok(json);
+        } catch(Exception e) {
+            Console.WriteLine("Failed to get chat numbers...");
+            Console.WriteLine(e.Message);
+            return BadRequest("Failed");
+        }
+    }
+
     [HttpGet("count")]
     public IActionResult GetChatCount()
     {

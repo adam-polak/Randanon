@@ -1,8 +1,9 @@
 'use client'
 
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ChatModel, User } from "../util/definitions";
-import { getChatCount, getChatsAbove, sendChat } from "../util/chatEvents";
+import { deleteChat, getChatCount, getChatNumbers, getChatsAbove, sendChat } from "../util/chatEvents";
 
 type UserProp = {
     user: User
@@ -20,10 +21,18 @@ type DeleteMessageProp = {
 }
 
 function DeleteChatButton({display, user, chat } : DeleteMessageProp) {
+
+    const router = useRouter();
+
+    function handleClick() {
+        deleteChat(user, chat.ChatNumber);
+        router.push("/delete");
+    }
+
     if(display) {
         return (
             <>
-            <button style={{ color: "red", marginRight: "1em"}}>X</button>
+            <button onClick={handleClick} style={{ color: "red", marginRight: "1em"}} >X</button>
             </> 
          );
     } else return (<></>);
@@ -49,7 +58,7 @@ function ChatMessage({ user, chat } : ChatMessageProp) {
     if(user.ID == chat.UserID) {
         return (
             <>
-            <div style={{display: "flex", flex: "flex-row", width: "100%"}} onMouseOver={hoverChat} onMouseOut={mouseLeave} >
+            <div style={{display: "flex", flex: "flex-row"}} onMouseOver={hoverChat} onMouseOut={mouseLeave} >
                 <DeleteChatButton display={displayDeleteButton} user={user} chat={chat} />
                 <div>{ message }</div>
             </div>
@@ -86,7 +95,7 @@ export default function ChatBox({ user } : UserProp) {
     useEffect( () => {
         const checkSetChat = async () => {
             const chatCount = await getChatCount();
-            if(chats.length != chatCount) {
+            if(chats.length < chatCount) {
                 const last = chats.at(chats.length - 1);
                 let largest = 0;
                 if(last != undefined) largest = last.ChatNumber;
@@ -103,6 +112,10 @@ export default function ChatBox({ user } : UserProp) {
                 });
 
                 setChats(y);
+            } else if(chats.length > chatCount) {
+                let chatNums : number[] = await getChatNumbers();
+                chats = chats.filter(x => chatNums.includes(x.ChatNumber));
+                setChats(chats);
             }
         }
 

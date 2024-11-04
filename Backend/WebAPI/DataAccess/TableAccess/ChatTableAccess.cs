@@ -47,6 +47,14 @@ public class ChatTableAccess
         return chats;
     }
 
+    public List<int> GetChatNumbers()
+    {
+        _conneciton.Open();
+        List<int> response = (List<int>)_conneciton.Query<int>($"SELECT chatnumber FROM {_table};");
+        _conneciton.Close();
+        return response;
+    }
+
     public List<ChatModel> GetAllChats()
     {
         List<ChatModel> chats = _randConnection.SelectAll<ChatModel>(_table);
