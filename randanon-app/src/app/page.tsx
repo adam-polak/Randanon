@@ -14,15 +14,12 @@ export default function Home() {
   async function setValidUser() {
     let ans = user;
     validateUser(user).then( b => {
-      console.log(b);
       if(b) {
         ans = user;
       } else {
         createUser().then(nUser => {
           if(nUser != null) {
             setUser(nUser);
-            document.cookie = `UserID=${user.ID}; Max-Age=86400`;
-            document.cookie = `UserKey=${user.UserKey}; Max-Age=86400`;
           }
         });
       }
@@ -30,6 +27,9 @@ export default function Home() {
   }
 
   setValidUser();
+
+  document.cookie = `UserID=${user.ID}; Max-Age=86400`;
+  document.cookie = `UserKey=${user.UserKey}; Max-Age=86400`;
   
   return (
     <main >

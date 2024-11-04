@@ -28,13 +28,14 @@ export function MessageForm({ user }: UserProp) {
 
     return (
         <form action={sendMessage}>
-            <input name="message" type="text" style={{border: "black 1px solid", color: "black", width: "80vw", height: "5vh"}} />
+            <input name="message" type="text" style={{padding: "1%", border: "black 1px solid", color: "black", width: "80vw", height: "5vh"}} />
             <button type="submit" style={{background: "red", width: "10vw", height: "5vh", border: "black 1px solid"}}>Send</button>
         </form>
     );
 }
 
 export default function ChatBox({ user } : UserProp) {
+
     let [chats, setChats] = useState<ChatModel[]>( [] );
     let [firstLoad, setFirstLoad] = useState<boolean>( true );
 

@@ -15,7 +15,7 @@ export async function validateUser(user: User) : Promise<boolean> {
     });
 
     const result = await response.text();
-    console.log(result);
+    
     if(result.length == 0) return true;
     else return false;
 }
