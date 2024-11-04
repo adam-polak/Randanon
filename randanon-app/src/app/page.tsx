@@ -9,14 +9,11 @@ export default function Home() {
 
   const cookieUser = getUserFromCookies(document.cookie);
 
-  let [user, setUser] = useState(cookieUser);
+  const [user, setUser] = useState(cookieUser);
 
   async function setValidUser() {
-    let ans = user;
-    validateUser(user).then( b => {
-      if(b) {
-        ans = user;
-      } else {
+    validateUser(user).then( valid => {
+      if(!valid) {
         createUser().then(nUser => {
           if(nUser != null) {
             setUser(nUser);

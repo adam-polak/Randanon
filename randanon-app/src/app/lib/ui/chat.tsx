@@ -44,7 +44,7 @@ function ChatMessage({ user, chat } : ChatMessageProp) {
         create a newline
     */
 
-    let [displayDeleteButton, setDisplayDeleteButton] = useState(false);
+    const [displayDeleteButton, setDisplayDeleteButton] = useState(false);
     const message = chat.Message;
 
     function hoverChat() {
@@ -88,8 +88,8 @@ function MessageForm({ user }: UserProp) {
 
 export default function ChatBox({ user } : UserProp) {
 
-    let [chats, setChats] = useState<ChatModel[]>( [] );
-    let [firstLoad, setFirstLoad] = useState<boolean>( true );
+    const [chats, setChats] = useState<ChatModel[]>( [] );
+    const [firstLoad, setFirstLoad] = useState<boolean>( true );
 
 
     useEffect( () => {
@@ -100,8 +100,8 @@ export default function ChatBox({ user } : UserProp) {
                 let largest = 0;
                 if(last != undefined) largest = last.ChatNumber;
 
-                let x : ChatModel[] = await getChatsAbove(largest);
-                let y : ChatModel[] = [];
+                const x : ChatModel[] = await getChatsAbove(largest);
+                const y : ChatModel[] = [];
 
                 chats.forEach(element => {
                     y.push(element);
@@ -113,9 +113,9 @@ export default function ChatBox({ user } : UserProp) {
 
                 setChats(y);
             } else if(chats.length > chatCount) {
-                let chatNums : number[] = await getChatNumbers();
-                chats = chats.filter(x => chatNums.includes(x.ChatNumber));
-                setChats(chats);
+                const chatNums : number[] = await getChatNumbers();
+                const filt = chats.filter(x => chatNums.includes(x.ChatNumber));
+                setChats(filt);
             }
         }
 
@@ -131,7 +131,7 @@ export default function ChatBox({ user } : UserProp) {
 
     });
 
-    let messages = chats.map((chat) => {
+    const messages = chats.map((chat) => {
         return (<ChatMessage key={chat.ChatNumber} user={user} chat={chat} />);
     });
 
