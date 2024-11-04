@@ -1,41 +1,35 @@
 'use client'
 
-import { useEffect, useState } from "react";
-import { validationScript } from "./lib/util/scripts";
-import getUserFromCookies from "./lib/cookies";
+import { useState } from "react";
+import getUserFromCookies from "./lib/util/cookies";
 import ChatBox from "./lib/ui/chat";
-import { User } from "./lib/util/definitions";
+import { createUser, validateUser } from "./lib/util/userEvents";
 
 export default function Home() {
 
-  let [user, setUser] = useState<User>(
-    {
-      ID: 0,
-      UserKey: 0
-    }
-  )
+  const cookieUser = getUserFromCookies(document.cookie);
 
-  useEffect(() => {
+  let [user, setUser] = useState(cookieUser);
 
-    const setUserFromCookies = () => {
-      if(user.ID == 0 || user.UserKey == 0) {
-        user = getUserFromCookies(document.cookie);
-        setUser(user);
+  async function setValidUser() {
+    let ans = user;
+    validateUser(user).then( b => {
+      console.log(b);
+      if(b) {
+        ans = user;
+      } else {
+        createUser().then(nUser => {
+          if(nUser != null) {
+            setUser(nUser);
+            document.cookie = `UserID=${user.ID}; Max-Age=86400`;
+            document.cookie = `UserKey=${user.UserKey}; Max-Age=86400`;
+          }
+        });
       }
-    }
+    });
+  }
 
-    const validUser = async () => {
-      const changeUser = await validationScript(user);
-      if(changeUser.UserKey != user.UserKey) {
-        setUser(changeUser);
-      }
-    }
-
-    setUserFromCookies();
-    validUser();
-    document.cookie = `UserID=${user.ID}; Max-Age=86400`;
-    document.cookie = `UserKey=${user.UserKey}; Max-Age=86400`;
-  });
+  setValidUser();
   
   return (
     <main >

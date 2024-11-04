@@ -1,6 +1,6 @@
 'use client'
 
-import { User } from "./util/definitions";
+import { User } from "./definitions";
 
 export default function getUserFromCookies(cookieStr : string) : User {
     const cookieArr = cookieStr.split(' ');
