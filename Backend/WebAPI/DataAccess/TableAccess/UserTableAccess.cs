@@ -22,10 +22,10 @@ public class UserTableAccess
         return _rnd.NextInt64(1928, 9999999);
     }
 
-    public async Task<UserModel> CreateUserAsync()
+    public UserModel CreateUser()
     {
         long id = GetRandomLong();
-        List<UserModel> users = await _connection.SelectAllAsync<UserModel>(_table);
+        List<UserModel> users = _connection.SelectAll<UserModel>(_table);
 
         while(users.Where(x => x.ID == id).Count() != 0)
         {
@@ -34,13 +34,13 @@ public class UserTableAccess
 
         UserModel user = new UserModel() { ID = id, UserKey = GetRandomLong() };
 
-        _connection.InsertAsync(_table, user);
+        _connection.Insert(_table, user);
 
         return user;
     }
 
-    public async Task<bool> ValidUserAsync(UserModel user)
+    public bool ValidUser(UserModel user)
     {
-        return await _connection.ContainsAsync<UserModel>(_table, user.GetSqlValues());
+        return _connection.Contains<UserModel>(_table, user.GetSqlValues());
     }
 }

@@ -20,47 +20,47 @@ public class ChatTableAccess
         _pKeyName = "ChatNumber";
     }
 
-    private async Task<long> GetLargestPKey()
+    private long GetLargestPKey()
     {
-        await _conneciton.OpenAsync();
+        _conneciton.Open();
         string query = $"SELECT * FROM {_table} WHERE {_pKeyName}=(SELECT MAX({_pKeyName}) FROM {_table});";
-        ChatModel? m = ((List<ChatModel>)await _conneciton.QueryAsync<ChatModel>(query)).FirstOrDefault();
+        ChatModel? m = ((List<ChatModel>)_conneciton.Query<ChatModel>(query)).FirstOrDefault();
         long largest = m == null ? 0 : m.ChatNumber;
-        await _conneciton.CloseAsync();
+        _conneciton.Close();
         return largest;
     }
 
-    public async Task<int> GetChatCount()
+    public int GetChatCount()
     {
-        await _conneciton.OpenAsync();
-        List<int> response = (List<int>)await _conneciton.QueryAsync<int>($"SELECT COUNT(*) FROM {_table};");
-        await _conneciton.CloseAsync();
+        _conneciton.Open();
+        List<int> response = (List<int>)_conneciton.Query<int>($"SELECT COUNT(*) FROM {_table};");
+        _conneciton.Close();
         
         return response.FirstOrDefault();
     }
 
-    public async Task<List<ChatModel>> GetChatsAbove(int x)
+    public List<ChatModel> GetChatsAbove(int x)
     {
-        await _conneciton.OpenAsync();
-        List<ChatModel> chats = (List<ChatModel>)await _conneciton.QueryAsync<ChatModel>($"SELECT * FROM {_table} WHERE ChatNumber > {x};");
-        await _conneciton.CloseAsync();
+        _conneciton.Open();
+        List<ChatModel> chats = (List<ChatModel>)_conneciton.Query<ChatModel>($"SELECT * FROM {_table} WHERE ChatNumber > {x};");
+        _conneciton.Close();
         return chats;
     }
 
-    public async Task<List<ChatModel>> GetAllChats()
+    public List<ChatModel> GetAllChats()
     {
-        List<ChatModel> chats = await _randConnection.SelectAllAsync<ChatModel>(_table);
+        List<ChatModel> chats = _randConnection.SelectAll<ChatModel>(_table);
         return chats;
     }
 
-    public async void SendChatAsync(UserModel user, string message)
+    public  void SendChat(UserModel user, string message)
     {
         message = StringSqlValue.ValidateString(message);
-        ChatModel m = new ChatModel() { UserID = user.ID, ChatNumber = (await GetLargestPKey()) + 1, Message = message };
-        _randConnection.InsertAsync(_table, m);
+        ChatModel m = new ChatModel() { UserID = user.ID, ChatNumber = (GetLargestPKey()) + 1, Message = message };
+        _randConnection.Insert(_table, m);
     }
 
-    public async Task<bool> DeleteChat(UserModel user, long chatNumber)
+    public bool DeleteChat(UserModel user, long chatNumber)
     {
         ChatModel m = new ChatModel() { UserID = user.ID, ChatNumber = chatNumber, Message = "" };
         List<ISqlValue> values = m.GetSqlValues()
@@ -69,6 +69,6 @@ public class ChatTableAccess
                                             x.GetValueSqlString().Equals($"{user.ID}") 
                                             || x.GetValueSqlString().Equals($"{chatNumber}")
                                         ).ToList();
-        return await _randConnection.DeleteAsync<ChatModel>(_table, values);
+        return _randConnection.Delete<ChatModel>(_table, values);
     }
 }

@@ -83,11 +83,11 @@ public class ChatController : ControllerBase
     }
 
     [HttpGet("all")]
-    public async Task<IActionResult> GetChats()
+    public IActionResult GetChats()
     {
         AddHeader.AddCors(this);
         try {
-            List<ChatModel> chats = await _chatTable.GetAllChats();
+            List<ChatModel> chats = _chatTable.GetAllChats();
             string json = GetJsonForChatModelList(chats);
             return Ok(json);
         } catch(Exception e) {
@@ -98,11 +98,11 @@ public class ChatController : ControllerBase
     }
 
     [HttpGet("/chats/{num}")]
-    public async Task<IActionResult> GetChatsAbove(int num)
+    public IActionResult GetChatsAbove(int num)
     {
         AddHeader.AddCors(this);
         try {
-            List<ChatModel> chats = await _chatTable.GetChatsAbove(num);
+            List<ChatModel> chats = _chatTable.GetChatsAbove(num);
             string json = GetJsonForChatModelList(chats);
             return Ok(json);
         } catch(Exception e) {
@@ -113,11 +113,11 @@ public class ChatController : ControllerBase
     }
 
     [HttpGet("count")]
-    public async Task<IActionResult> GetChatCount()
+    public IActionResult GetChatCount()
     {
         AddHeader.AddCors(this);
         try {
-            int count = await _chatTable.GetChatCount();
+            int count = _chatTable.GetChatCount();
             return Ok(count);
         } catch(Exception e) {
             Console.WriteLine("Failed to get chat count...");
@@ -127,16 +127,16 @@ public class ChatController : ControllerBase
     }
 
     [HttpPost("send")]
-    public async Task<IActionResult> SendChat([FromBody] JsonObject j)
+    public IActionResult SendChat([FromBody] JsonObject j)
     {
         AddHeader.AddCors(this);
         try {
             JObject json = GetJObject(j);
             UserModel user = GetUserFromJson(json);
-            if(!await _userTable.ValidUserAsync(user)) return Ok(ErrorMessages.INVALID_USER);
+            if(!_userTable.ValidUser(user)) return Ok(ErrorMessages.INVALID_USER);
 
             string message = GetMessageFromJson(json);
-            _chatTable.SendChatAsync(user, message);
+            _chatTable.SendChat(user, message);
             return Ok();
         } catch(Exception e) {
             Console.WriteLine("Failed to send chat...");
@@ -146,17 +146,17 @@ public class ChatController : ControllerBase
     }
 
     [HttpDelete("delete")]
-    public async Task<IActionResult> DeleteChat([FromBody] JsonObject j)
+    public IActionResult DeleteChat([FromBody] JsonObject j)
     {
         AddHeader.AddCors(this);
         try {
             JObject json = GetJObject(j);
             UserModel user = GetUserFromJson(json);
-            if(!await _userTable.ValidUserAsync(user)) return Ok(ErrorMessages.INVALID_USER);
+            if(!_userTable.ValidUser(user)) return Ok(ErrorMessages.INVALID_USER);
 
             long chatNumber = GetChatNumberFromJson(json);
 
-            bool deleted = await _chatTable.DeleteChat(user, chatNumber);
+            bool deleted = _chatTable.DeleteChat(user, chatNumber);
 
             if(deleted) return Ok();
             else return Ok(ErrorMessages.NONE_TO_DELETE);

@@ -20,11 +20,11 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("createuser")]
-    public async Task<IActionResult> CreateUser()
+    public IActionResult CreateUser()
     {
         AddHeader.AddCors(this);
         try {
-            UserModel user = await _userTable.CreateUserAsync();
+            UserModel user = _userTable.CreateUser();
             string json = JsonConvert.SerializeObject(user);
             return Ok(json);
         } catch(Exception e) {
@@ -35,11 +35,11 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("validuser")]
-    public async Task<IActionResult> ValidUser([FromBody] UserModel user)
+    public IActionResult ValidUser([FromBody] UserModel user)
     {
         AddHeader.AddCors(this);
         try {
-            if(await _userTable.ValidUserAsync(user)) return Ok();
+            if(_userTable.ValidUser(user)) return Ok();
             else return Ok("false");
         } catch(Exception e) {
             Console.WriteLine("Failed to validate user...");

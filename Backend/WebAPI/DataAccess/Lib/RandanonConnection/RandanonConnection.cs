@@ -31,125 +31,125 @@ public class RandanonConnection : IDbConnection
         if(!IsSqlModel(t)) throw new Exception("Type T must implement ISqlModel");
     }
 
-    private async Task<List<T>> DoQuery<T>(string query)
+    private List<T> DoQuery<T>(string query)
     {
-        await _dbConnection.OpenAsync();
-        List<T> ans = (List<T>)await _dbConnection.QueryAsync<T>(query);
-        await _dbConnection.CloseAsync();
+        _dbConnection.Open();
+        List<T> ans = (List<T>)_dbConnection.Query<T>(query);
+        _dbConnection.Close();
         return ans;
     }
 
-    private async Task<int> DoCommand(string query)
+    private int DoCommand(string query)
     {
-        await _dbConnection.OpenAsync();
+        _dbConnection.Open();
         using(DbCommand command = DbCommandFactory.CreateDbCommand(query, _dbConnection))
         {
-            await command.ExecuteNonQueryAsync();
+            command.ExecuteNonQuery();
         }
-        await _dbConnection.CloseAsync();
+        _dbConnection.Close();
 
         return 1;
     }
 
-    private async Task<int> DoCommandNoClose(string query)
+    private int DoCommandNoClose(string query)
     {
         using(DbCommand command = DbCommandFactory.CreateDbCommand(query, _dbConnection))
         {
-            await command.ExecuteNonQueryAsync();
+            command.ExecuteNonQuery();
         }
 
         return 1;
     }
 
-    private async Task<bool> ContainsNoClose<T>(string query)
+    private bool ContainsNoClose<T>(string query)
     {
-        List<T> list = (List<T>)await _dbConnection.QueryAsync<T>(query);
+        List<T> list = (List<T>)_dbConnection.Query<T>(query);
         return list.Count != 0;
     }
 
-    public async Task<bool> ContainsAsync<T>(string table, ISqlValue value)
+    public bool Contains<T>(string table, ISqlValue value)
     {
-        List<T> list = await SelectAsync<T>(table, value);
+        List<T> list = Select<T>(table, value);
         return list.Count != 0;
     }
 
-    public async Task<bool> ContainsAsync<T>(string table, List<ISqlValue> values)
+    public bool Contains<T>(string table, List<ISqlValue> values)
     {
-        List<T> list = await SelectAsync<T>(table, values);
+        List<T> list = Select<T>(table, values);
         return list.Count != 0;
     }
 
-    public async void InsertAsync(string table, ISqlModel model)
+    public void Insert(string table, ISqlModel model)
     {
         string query = _sqlSB.InsertString(table, model.GetSqlValues());
-        await DoCommand(query);
+        DoCommand(query);
     }
 
-    public async void InsertAllAsync(string table, List<ISqlModel> models)
+    public void InsertAll(string table, List<ISqlModel> models)
     {
-        await _dbConnection.OpenAsync();
+        _dbConnection.Open();
 
         foreach(ISqlModel model in models)
         {
             string query = _sqlSB.InsertString(table, model.GetSqlValues());
-            await DoCommandNoClose(query);
+            DoCommandNoClose(query);
         }
 
-        await _dbConnection.CloseAsync();
+        _dbConnection.Close();
     }
 
-    public async Task<List<T>> SelectAsync<T>(string table, ISqlValue value)
+    public List<T> Select<T>(string table, ISqlValue value)
     {
         ValidateType(typeof(T));
         string query = _sqlSB.SelectString(table, value);
-        return await DoQuery<T>(query);
+        return DoQuery<T>(query);
     }
 
-    public async Task<List<T>> SelectAsync<T>(string table, List<ISqlValue> values)
+    public List<T> Select<T>(string table, List<ISqlValue> values)
     {
         ValidateType(typeof(T));
         string query = _sqlSB.SelectString(table, values);
-        return await DoQuery<T>(query);
+        return DoQuery<T>(query);
     }
 
-    public async Task<List<T>> SelectAllAsync<T>(string table)
+    public List<T> SelectAll<T>(string table)
     {
         ValidateType(typeof(T));
         string query = _sqlSB.SelectAllString(table);
-        return await DoQuery<T>(query);
+        return DoQuery<T>(query);
     }
 
-    public async Task<bool> DeleteAsync<T>(string table, ISqlValue value)
+    public bool Delete<T>(string table, ISqlValue value)
     {
         ValidateType(typeof(T));
-        if(!await ContainsAsync<T>(table, value)) return false;
+        if(!Contains<T>(table, value)) return false;
         string query = _sqlSB.DeleteString(table, value);
-        await DoCommand(query);
+        DoCommand(query);
         return true;
     }
 
-    public async Task<bool> DeleteAsync<T>(string table, List<ISqlValue> values)
+    public bool Delete<T>(string table, List<ISqlValue> values)
     {
         ValidateType(typeof(T));
-        if(!await ContainsAsync<T>(table, values)) return false;
+        if(!Contains<T>(table, values)) return false;
         string query = _sqlSB.DeleteString(table, values);
-        await DoCommand(query);
+        DoCommand(query);
         return true;
     }
 
-    public async Task<int> DeleteAllAsync<T>(string table, List<ISqlModel> models)
+    public int DeleteAll<T>(string table, List<ISqlModel> models)
     {
         ValidateType(typeof(T));
 
         int removed = 0;
-        await _dbConnection.OpenAsync();
+        _dbConnection.Open();
         foreach(ISqlModel model in models)
         {
             string query = _sqlSB.DeleteString(table, model.GetSqlValues());
-            if(await ContainsNoClose<T>(query)) removed++;
-            await DoCommandNoClose(query);
+            if(ContainsNoClose<T>(query)) removed++;
+            DoCommandNoClose(query);
         }
-        await _dbConnection.CloseAsync();
+        _dbConnection.Close();
 
         return removed;
     }
