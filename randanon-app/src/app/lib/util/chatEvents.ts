@@ -29,7 +29,7 @@ export async function sendChat(user: User, message: string) {
 }
 
 export async function getChatNumbers() {
-    const requestUrl = `${RandanonApi}/chatnumbers/`;
+    const requestUrl = `${apiUrl}/chatnumbers/`;
     const response = await fetch(requestUrl);
     const body = await response.text();
     return JSON.parse(body);
