@@ -2,33 +2,71 @@
 
 import { useEffect, useState } from "react";
 import { ChatModel, User } from "../util/definitions";
-import { getChatCount, getChatsAbove, sendChatJson } from "../util/chatEvents";
+import { getChatCount, getChatsAbove, sendChat } from "../util/chatEvents";
 
 type UserProp = {
     user: User
 }
 
 type ChatMessageProp = {
+    user: User,
     chat: ChatModel
 }
 
-export function ChatMessage({ chat } : ChatMessageProp) {
+type DeleteMessageProp = {
+    display: boolean,
+    user: User,
+    chat: ChatModel
+}
+
+function DeleteChatButton({display, user, chat } : DeleteMessageProp) {
+    if(display) {
+        return (
+            <>
+            <button style={{ color: "red", marginRight: "1em"}}>X</button>
+            </> 
+         );
+    } else return (<></>);
+}
+
+function ChatMessage({ user, chat } : ChatMessageProp) {
     /* 
         split message to deal with overflow, for each 100 or so characters
         create a newline
     */
+
+    let [displayDeleteButton, setDisplayDeleteButton] = useState(false);
     const message = chat.Message;
-    return (
-        <div>{ chat.Message }</div>
-    );
+
+    function hoverChat() {
+        setDisplayDeleteButton(true);
+    }
+
+    function mouseLeave() {
+        setDisplayDeleteButton(false);
+    }
+
+    if(user.ID == chat.UserID) {
+        return (
+            <>
+            <div style={{display: "flex", flex: "flex-row", width: "100%"}} onMouseOver={hoverChat} onMouseOut={mouseLeave} >
+                <DeleteChatButton display={displayDeleteButton} user={user} chat={chat} />
+                <div>{ message }</div>
+            </div>
+            </>
+        );
+    } else {
+        return (
+            <><div>{ message }</div></>
+        );
+    }
 }
 
-export function MessageForm({ user }: UserProp) {
+function MessageForm({ user }: UserProp) {
     function sendMessage(formData: FormData) {
         const message = formData.get("message");
         if(message == null) return;
-        const json = `{"User":{"ID":${user.ID}, "UserKey":${user.UserKey}},"Message":"${message}"}`;
-        sendChatJson(json)
+        sendChat(user, message.toString());
     }
 
     return (
@@ -81,7 +119,7 @@ export default function ChatBox({ user } : UserProp) {
     });
 
     let messages = chats.map((chat) => {
-        return (<ChatMessage key={chat.ChatNumber} chat={chat} />);
+        return (<ChatMessage key={chat.ChatNumber} user={user} chat={chat} />);
     });
 
     return (

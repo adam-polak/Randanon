@@ -12,7 +12,8 @@ export async function getChatCount() : Promise<number> {
     return parseInt(result);
 }
 
-export async function sendChatJson(json: string) {
+export async function sendChat(user: User, message: string) {
+    const json = `{"User":{"ID":${user.ID}, "UserKey":${user.UserKey}},"Message":"${message}"}`;
     const requestUrl = `${apiUrl}/send`;
     await fetch(requestUrl, {
         method: "POST",
@@ -21,6 +22,10 @@ export async function sendChatJson(json: string) {
         },
         body: json
     });
+}
+
+export async function deleteChat() {
+    
 }
 
 export async function getChatsAbove(x : number) : Promise<ChatModel[]> {

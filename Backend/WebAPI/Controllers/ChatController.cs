@@ -74,6 +74,7 @@ public class ChatController : ControllerBase
         foreach(ChatModel chat in chats)
         {
             webChatModels.Add(new WebChatModel() {
+                UserID = chat.UserID,
                 ChatNumber = chat.ChatNumber,
                 Message = chat.Message
             });

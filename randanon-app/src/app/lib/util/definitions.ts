@@ -4,6 +4,7 @@ export type User = {
 }
 
 export type ChatModel = {
+    UserID: number
     ChatNumber: number;
     Message: string;
 }
