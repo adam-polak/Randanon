@@ -13,6 +13,11 @@ type ChatMessageProp = {
 }
 
 export function ChatMessage({ chat } : ChatMessageProp) {
+    /* 
+        split message to deal with overflow, for each 100 or so characters
+        create a newline
+    */
+    const message = chat.Message;
     return (
         <div>{ chat.Message }</div>
     );
@@ -80,8 +85,7 @@ export default function ChatBox({ user } : UserProp) {
     });
 
     return (
-        <div className="flex-row" style={{margin: "auto"}}>
-            <h1>User: {user.ID} {user.UserKey}</h1>
+        <div className="flex-row" style={{margin: "auto", padding: "5%"}}>
             <div className="flex-row" style={{border: "black 1px solid", padding: "2%", height:"80vh", width: "90vw", background: "white", color: "black"}}>
                 { messages }
             </div>
