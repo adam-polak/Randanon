@@ -35,10 +35,9 @@ function DeleteChatButton({ display, user, chat }: DeleteChatButtonProp) {
 export default function ChatMessage({ user, chat }: ChatMessageProp) {
 
     const message = chat.Message;
+    const [displayDeleteButton, setDisplayDeleteButton] = useState(false);
 
     if(user.ID == chat.UserID) {
-
-        const [displayDeleteButton, setDisplayDeleteButton] = useState(false);
     
         function hoverChat() {
             setDisplayDeleteButton(true);

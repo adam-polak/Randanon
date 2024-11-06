@@ -23,7 +23,7 @@ export default function ChatBox( { user }: ChatBoxProp) {
                         else lastNum = filt.at(filt.length - 1)?.ChatNumber ?? 0;
                         getChatsAbove(lastNum).then(nChats => {
                             const curChatNums = filt.map(c => c.ChatNumber);
-                            const filterNChats = nChats.filter(x => filt.map(x => !curChatNums.includes(x.ChatNumber)));
+                            const filterNChats = nChats.filter(x => !curChatNums.includes(x.ChatNumber));
                             filterNChats.forEach(c => filt.push(c));
                             setMessages(filt);
                         });
@@ -33,7 +33,7 @@ export default function ChatBox( { user }: ChatBoxProp) {
                 }
             });
         }, 2000);
-    }, []);
+    }, [messages]);
 
     return (
         <div className="flex-row" style={{margin: "auto", padding: "5%"}}>

@@ -8,6 +8,9 @@ import { User } from "./lib/util/definitions";
 
 export default function Home() {
 
+  const [user, setUser] = useState({ ID: 0, UserKey: 0 });
+  const [isUserValidated, setValidated] = useState(false);
+
   useEffect(() => {
     setInterval(() => {
       if(isUserValidated) {
@@ -19,10 +22,7 @@ export default function Home() {
       const cookieUser = getUserFromCookies(document.cookie);
       setValidUser(cookieUser);
     }, 4000);
-  }, []);
-
-  const [user, setUser] = useState({ ID: 0, UserKey: 0 });
-  const [isUserValidated, setValidated] = useState(false);
+  });
 
   async function setValidUser(user: User) {
     validateUser(user).then( valid => {
@@ -39,7 +39,6 @@ export default function Home() {
   
   return (
     <main >
-      <h1> {user.UserKey} {user.ID}</h1>
       <div className="flex">
         <ChatBox user={user} />
       </div>
